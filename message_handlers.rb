@@ -1,15 +1,20 @@
 class MessageHandler
-	attr_accessor :successor, :status
+	attr_accessor :successor, :status, :proc
 	def initialize
 		@status = rand(2)
+		@proc = Proc.new do |msg| 
+			raise ArgumentError, "Message cannot be empty" if msg.nil? || msg.empty?
+		end
 	end
 	def handle msg 
+		@proc.call msg  
 		return msg 
 	end
 end
 
 class VoiceMailHandler < MessageHandler
 	def handle msg 
+		@proc.call msg 
 		if @status == 1
 			return "#{msg} is handled by voice mail"  
 		else
@@ -21,6 +26,7 @@ end
 
 class SMSHandler < MessageHandler
 	def handle msg 
+		@proc.call msg 
 		if @status == 1
 			return "#{msg} is handled by sms" 
 		else
@@ -32,6 +38,7 @@ end
 
 class EmailHandler < MessageHandler
 	def handle msg 
+		@proc.call msg 
 		if @status == 1
 			return "#{msg} is handled by email"  
 		else
